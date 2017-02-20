@@ -28,7 +28,7 @@ exports.handler = (event, context, callback) => {
         var text = messagingEvent.message.text; 
         console.log("Receive a message: " + text);
         
-        sendTextMessage(sender, "Text received, echo: "+ text.substring(0, 200));
+        sendTextMessage(sender, "Text prijat, echo: "+ text.substring(0, 200));
  
         callback(null, "Done")
       }
