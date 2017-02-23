@@ -27,7 +27,9 @@ exports.handler = (event, context, callback) => {
       if (messagingEvent.message && messagingEvent.message.text) {
         var text = messagingEvent.message.text; 
         console.log("Receive a message: " + text);
-        
+        console.log("FB sender: " + sender);
+        console.log("FB sender ID: " + sender.id);
+        console.log("FB full: " + messagingEvent.sender.id);
         sendTextMessage(sender, "Text prijat, echo: "+ text.substring(0, 200));
  
         callback(null, "Done")
