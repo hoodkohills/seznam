@@ -2,7 +2,7 @@ var write = require('./../db/createItem.js');
 var update = require('./../db/updateItem.js');
 
 exports.newList = function(userId, listName, callback) {
-    var message = "Seznam " + listName + " byl uspesne vytvoren.";
+
     console.log(userId);
     console.log(listName);
 
@@ -13,7 +13,12 @@ exports.newList = function(userId, listName, callback) {
                 "list": listName
             }
         };
-    write.put(params);
+    write.put(params, function (err, data){
+        if (err) {var message = "Jejda, neco se pokazilo a seznam nebyl nalezen ani vytvoren."}
+        else {
+        var message = "Seznam " + listName + " byl uspesne vytvoren.";
+        }
+    });
     callback (message);
 }
 
