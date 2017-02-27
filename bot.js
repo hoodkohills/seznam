@@ -11,7 +11,7 @@ module.exports = botBuilder(function (request) {
     var userId = request.sender;
 
     // READ latest state of user. If state is not present, run init script to create necessary table entries.
-    var state = { listName: 'paja' };
+    var state = { listName: 'paja' }; // Currently hardcoded!
 
     // MAIN switch
     switch(data.first) {
