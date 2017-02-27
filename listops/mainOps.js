@@ -38,3 +38,24 @@ exports.updateList = function(userId, listName, item, callback) {
     update.update(params);
     callback (message);
 }
+
+exports.stateUpdate = function(userId, listName, callback) {
+    var message = "Uzivatel cislo " + userId + " chce pridat " + item + " na seznam "+ listName + ".";
+    console.log(userId);
+    console.log(listName);
+    console.log(item);
+    var params = {
+        TableName: "seznam-state",
+        Key:{
+            "user": userId
+        },
+        UpdateExpression: "set state", // INCORRECT!!!
+        ConditionExpression: "size(info.actors) >= :num",
+        ExpressionAttributeValues:{
+            ":num":3
+        },
+        ReturnValues:"UPDATED_NEW"
+    };
+    update.update(params);
+    callback (message);
+}

@@ -36,7 +36,7 @@ module.exports = botBuilder(function (request) {
                 global.message = callback;
                 });
             }
-            // WRITE latest state of user, whatever that means.
+            // WRITE latest state of user, whatever that means. listOps.stateUpdate(userId, listName);
             return message;
             break;
         case "pridej":
@@ -49,9 +49,7 @@ module.exports = botBuilder(function (request) {
                 global.message = callback;
                 });
             }
-
-
-            // WRITE latest state of user, whatever that means.
+            // WRITE latest state of user, whatever that means. listOps.stateUpdate(userId, listName);
             return message;
             break;
         default:
