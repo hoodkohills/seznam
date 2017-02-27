@@ -4,7 +4,7 @@ var parse = require('./common/parse.js');
 module.exports = botBuilder(function (request) {
     console.log(request);
     console.log(request.text);
-    var data = parse.parseInputOrder(event.text);
+    var data = parse.parseInputOrder(request.text);
     console.log (data);
     console.log (data[0]);
     console.log (data[1]);
