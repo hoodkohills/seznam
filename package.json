@@ -1,0 +1,18 @@
+{
+  "name": "seznam",
+  "version": "1.0.0",
+  "license": "GPL-3.0",
+  "description": "Don't forget to remember.",
+  "repository": "https://github.com/hoodkohils/seznam",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "claudia-bot-builder": "^2.13.2",
+    "huh": "^2.0.1"
+  },
+  "devDependencies": {
+    "claudia": "^2.9.0"
+  }
+}
