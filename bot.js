@@ -11,6 +11,23 @@ module.exports = botBuilder(function (request) {
     console.log (data.third);
     console.log (data.fourth);
     console.log (data.fifth);
-    switch
-    return 'Thanks for sending ' + request.text  + '. Your message is very important to us, but ...';
+    switch(data.first) {
+        case "ahoj":
+            if (data.second = undefined) { return 'Ahoj! Zkus napsat za ahoj jeste neco a ja to zopakuji.'
+            } else {
+            return 'Ahoj znova, napsal si ' + data.second + ', ze mam pravdu?'
+            }
+            break;
+        case "ano":
+            return 'Ja vim, ze ano...'
+            break;
+        case "help":
+            return 'Zkus napsat prikaz ahoj!'
+            break;
+        default:
+            return 'Bohuzel, tento prikaz neznam, zkus napsat HELP.';
+    }
+
+
+
 });
