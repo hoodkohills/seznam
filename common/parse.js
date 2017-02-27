@@ -1,5 +1,5 @@
 exports.parseInputOrder = function(string) {
-        var data = str.toLowerCase().split(' ');
+        var data = string.toLowerCase().split(' ');
 
         if(data.length > 5)
         {
