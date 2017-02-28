@@ -23,15 +23,14 @@ exports.updateList = function(userId, listName, item, callback) {
     console.log(listName);
     console.log(item);
     var params = {
-        TableName: "seznam",
+        TableName: "seznam-state",
         Key:{
             "user": userId,
             "list": listName
         },
-        UpdateExpression: "set items", // INCORRECT!!!
-        ConditionExpression: "size(info.actors) >= :num",
+        UpdateExpression: "ADD items :i",
         ExpressionAttributeValues:{
-            ":num":3
+            ":i":docClient.createSet([item])
         },
         ReturnValues:"UPDATED_NEW"
     };
@@ -47,12 +46,12 @@ exports.stateUpdate = function(userId, listName, callback) {
     var params = {
         TableName: "seznam-state",
         Key:{
-            "user": userId,
-            "list": listName
+            "user": userId
         },
-        UpdateExpression: "ADD items :i",
+        UpdateExpression: "set state", // INCORRECT!!!
+        ConditionExpression: "size(info.actors) >= :num",
         ExpressionAttributeValues:{
-            ":i":docClient.createSet([item])
+            ":num":3
         },
         ReturnValues:"UPDATED_NEW"
     };
