@@ -49,10 +49,9 @@ exports.stateUpdate = function(userId, listName, callback) {
         Key:{
             "user": userId
         },
-        UpdateExpression: "set state", // INCORRECT!!!
-        ConditionExpression: "size(info.actors) >= :num",
+        UpdateExpression: "add items :i",
         ExpressionAttributeValues:{
-            ":num":3
+            ":i":item
         },
         ReturnValues:"UPDATED_NEW"
     };

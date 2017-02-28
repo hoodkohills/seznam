@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "license": "GPL-3.0",
   "description": "Don't forget to remember.",
-  "repository": "https://github.com/hoodkohils/seznam",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoodkohils/seznam.git"
+  },
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -14,5 +17,16 @@
   },
   "devDependencies": {
     "claudia": "^2.9.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/hoodkohils/seznam/issues"
+  },
+  "homepage": "https://github.com/hoodkohils/seznam#readme",
+  "keywords": [
+    "Don't",
+    "forget",
+    "to",
+    "remember."
+  ],
+  "author": "Dave de Sade"
 }
