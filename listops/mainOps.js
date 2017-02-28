@@ -51,7 +51,7 @@ exports.stateUpdate = function(userId, listName, callback) {
         },
         UpdateExpression: "add items :i",
         ExpressionAttributeValues:{
-            ":i":item
+            ":i":[item]
         },
         ReturnValues:"UPDATED_NEW"
     };
