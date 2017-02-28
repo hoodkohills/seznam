@@ -47,11 +47,12 @@ exports.stateUpdate = function(userId, listName, callback) {
     var params = {
         TableName: "seznam-state",
         Key:{
-            "user": userId
+            "user": userId,
+            "list": listName
         },
-        UpdateExpression: "add items :i",
+        UpdateExpression: "ADD items :i",
         ExpressionAttributeValues:{
-            ":i":[item]
+            ":i":docClient.createSet([item])
         },
         ReturnValues:"UPDATED_NEW"
     };
