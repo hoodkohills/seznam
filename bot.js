@@ -3,12 +3,12 @@ var parse = require('./common/parse.js');
 var listOps = require('./listops/mainOps.js');
 
 module.exports = botBuilder(function (request) {
-    var data = parse.parseInputOrder(request.text); // Completely parsed incoming meesage into OBJECT called data, with attributes first, second, third, fourth and fifth.
+    var data = parse.parseInputOrder(request.text); // Completely parsed incoming message into OBJECT called data, with attributes first, second, third, fourth and fifth.
     //console.log(request);
     //console.log(request.text);
     console.log (data);
     var listName = data.second; // You can't send an attribute of an object as argument. Extract attribute into new variable.
-    var userId = request.sender;
+    var userId = request.sender; // We always got a userId available.
 
     // READ latest state of user. If state is not present, run init script to create necessary table entries.
     var state = { listName: 'paja' }; // Currently hardcoded!
@@ -25,8 +25,12 @@ module.exports = botBuilder(function (request) {
         case "jo":
             return 'Ja vim, ze ano...';
             break;
+        case "ne":
+        case "kdepak":
+            return 'Jeden z nas se jiste myli...';
         case "help":
-            return 'Zkus napsat prikaz ahoj!';
+        case "pomoc":
+            return 'Zkus napsat prikaz `ahoj`!';
             break;
         case "seznam":
             if (!data.second) { return 'Za prikaz seznam jeste musis dopsat jmeno seznamu, ktery te zajima.'
@@ -49,6 +53,23 @@ module.exports = botBuilder(function (request) {
                 global.message = callback;
                 });
             }
+            // WRITE latest state of user, whatever that means. listOps.stateUpdate(userId, listName);
+            return message;
+            break;
+        case "ukaz":
+            var listName = state.listName;
+            listOps.getList(userId, listName, function (callback) {
+            console.log(callback);
+            global.message = callback;
+            });
+            // WRITE latest state of user, whatever that means. listOps.stateUpdate(userId, listName);
+            return message;
+            break;
+        case "seznamy":
+            listOps.listLists(userId, function (callback) {
+            console.log(callback);
+            global.message = callback;
+            });
             // WRITE latest state of user, whatever that means. listOps.stateUpdate(userId, listName);
             return message;
             break;

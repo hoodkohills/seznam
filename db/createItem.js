@@ -1,6 +1,6 @@
 // This function shall be later isolated into standalone Lambda function.
 exports.put = function (params) {
-var user = params.user;
+var user = params.userId;
 
 var AWS = require("aws-sdk");
 

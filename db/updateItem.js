@@ -21,6 +21,6 @@ docClient.update(params, function(err, data) {
     }
 });
 
-console.log('Tohle vypisuje db/createItem.js, mel bys videt parametry...');
+console.log('Tohle vypisuje db/updateItems.js, mel bys videt parametry...');
 console.log(params);
 }
