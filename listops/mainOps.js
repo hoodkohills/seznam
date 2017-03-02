@@ -31,13 +31,19 @@ exports.checkList = function(userId, listName, callback) {
 
     var params = {
         TableName: "seznam",
-        Item: {
+        Key: {
             "user": userId,
             "list": listName
         }
     };
 
-    return get.get(params);
+    return get.get(params, function(err, data) {
+        if (!err) {
+            callback(data);
+        } else {
+            callback(err);
+        }
+    });
 }
 
 exports.updateList = function(userId, listName, item, callback) {
@@ -99,31 +105,17 @@ exports.saveState = function(userId, listName) {
     // Saves latest change to the state.
     var params = {
         TableName: "seznam-state",
-        Item: {
-            "user": userId,
-            "list": listName
-        }
-    };
-
-    return write.put(params);
-}
-
-/*
-exports.listLists = function(userId, callback) {
-    console.log(userId);
-    console.log(listName);
-
-    var params = {
-        TableName: "seznam",
         Key: {
             "user": userId,
             "list": listName
-        }
+        },
+        UpdateExpression: "SET listName :l",
+        ExpressionAttributeValues: {
+            ":l": listName
+        },
+        ReturnValues: "UPDATED_NEW"
     };
-    get.get(params, function(callback){;
-    var message = "Tvoje seznamy: " + callback.list;
-    global.message = message;
-    callback (message);
-    });
+
+    return update.update(params);
 }
-*/
+

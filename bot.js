@@ -28,24 +28,41 @@ module.exports = botBuilder(function (request) {
                     done ('Zkus napsat prikaz `ahoj`!');
                 case "seznam":
                     if (!data.second) {
-                    // Get content of active list + inform user about his active list.
-                    done ('Tvuj aktualni seznam je: ' + state.Item.listName + '.');
+                    // List from last state - get list and name of it.
+                    var listName = state.Item.listName;
+                    listOps.checkList(userId, listName).then(function(list){
+                        var message = 'Obsah seznamu ' + listName + ': ';
+                        var things = list.Item.things.values;
+                        things.forEach (function(thing){
+                            message.push(thing);
+                            message.push(', ');
+                        });
+                        console.log(message);
+                    done(message);
+                    }).catch(function(err){
+                        done(err);
+                    });
                     } else {
-
-                           var listName = data.second;
-
-                           listOps.checkList(userId, listName).then(function(list){
-                               // if (state.Item.listName != data.second) {listOps.saveState(userId, listName);}
-                               console.log(list);
-                               done(list);
-                           }).catch(function(err){
-                           // if (state.Item.listName != data.second) {listOps.saveState(userId, listName);}
-                           // listOps.newList(userId, listName);
-                           // Create NEW list!
-                           });
+                        var listName = data.second;
+                        listOps.saveState(userId, listName);
+                        listOps.checkList(userId, listName).then(function(list){
+                            var message = 'Obsah seznamu ' + listName + ': ';
+                            var things = list.Item.things.values;
+                            things.forEach (function(thing){
+                                message.push(thing);
+                                message.push(', ');
+                            });
+                        console.log(message);
+                    done(message);
+                        }).catch(function(err){
+                        // if (state.Item.listName != data.second) {listOps.saveState(userId, listName);}
+                        // listOps.newList(userId, listName);
+                        // Create NEW list!
+                        console.log('CREATE NEW LIST!');
+                        });
                     }
                 case "pridej":
-                    if (!data.second) { done ('Musis napsat, co presne chces pridat na aktualni seznam.');
+                    if (!data.first) { done ('Musis napsat, co presne chces pridat na aktualni seznam.');
                     } else {
                             var listName = state.Item.listName;
                             var item = data.second;
@@ -57,10 +74,9 @@ module.exports = botBuilder(function (request) {
                 case "ukaz":
                     listName = state.Item.listName;
                     listOps.getList(userId, listName, function (callback) {
-                    console.log(callback);
-                    message = callback;
+                        console.log(callback);
+                        message = callback;
                     });
-                    // WRITE latest state of user, whatever that means. listOps.stateUpdate(userId, listName);
                     done (message);
                 case "seznamy":
                     listOps.listLists(userId, function (callback) {
