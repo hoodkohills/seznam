@@ -3,19 +3,27 @@ var update = require('./../db/updateItem.js');
 var get = require('./../db/getItem.js');
 
 exports.newList = function(userId, listName, callback) {
-    var message = "Seznam " + listName + " byl uspesne vytvoren.";
+
     console.log(userId);
     console.log(listName);
 
     var params = {
-            TableName: "seznam",
-            Item: {
-                "user": userId,
-                "list": listName
-            }
-        };
-    write.put(params);
-    callback (message);
+        TableName: "seznam",
+        Item: {
+            "user": userId,
+            "list": listName
+        }
+    };
+
+    write.put(params, function(err, data) {
+        if (!err) {
+            var message = "Seznam " + listName + " byl uspesne vytvoren.";
+            callback(message);
+        } else {
+            var message = "Seznam " + listName + " NEBYL vytvoren! Pardon!";
+            callback(message);
+        }
+    });
 }
 
 exports.updateList = function(userId, listName, item, callback) {
@@ -27,19 +35,19 @@ exports.updateList = function(userId, listName, item, callback) {
     console.log(item);
     var params = {
         TableName: "seznam",
-        Key:{
+        Key: {
             "user": userId,
             "list": listName
         },
         UpdateExpression: "ADD things :i",
-        ExpressionAttributeValues:{
-            ":i":docClient.createSet([item])
+        ExpressionAttributeValues: {
+            ":i": docClient.createSet([item])
         },
-        ReturnValues:"UPDATED_NEW"
+        ReturnValues: "UPDATED_NEW"
     };
     update.update(params);
-    var message = "OK, pridal jsem " + item + " na seznam "+ listName + ".";
-    callback (message);
+    var message = "OK, pridal jsem " + item + " na seznam " + listName + ".";
+    callback(message);
 }
 
 exports.getList = function(userId, listName, callback) {
@@ -54,11 +62,37 @@ exports.getList = function(userId, listName, callback) {
         }
     };
 
-    get.get(params, function (callback) {
+    get.get(params, function(callback) {
         console.log('RESULT of DB call: ', callback);
     });
     var message = "Seznam " + listName + " obsahuje polozky: ...";
     callback(message);
+}
+
+exports.loadState = function(userId) {
+    console.log(userId);
+
+    var params = {
+        TableName: "seznam-state",
+        Key: {
+            "user": userId
+        }
+    };
+
+    return get.get(params);
+}
+
+exports.saveState = function(userId, listName) {
+    console.log(userId);
+
+    var params = {
+        TableName: "seznam-state",
+        Key: {
+            "user": userId
+        }
+    };
+
+    return get.get(params);
 }
 
 /*
