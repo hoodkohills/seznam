@@ -8,7 +8,6 @@ exports.update = function(params) {
             endpoint: "dynamodb.eu-central-1.amazonaws.com"
         });
 
-
         var dynamodb = new AWS.DynamoDB();
         var docClient = new AWS.DynamoDB.DocumentClient();
         console.log("Attempting an update...");

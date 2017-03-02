@@ -3,7 +3,6 @@ var update = require('./../db/updateItem.js');
 var get = require('./../db/getItem.js');
 
 exports.newList = function(userId, listName, callback) {
-
     console.log(userId);
     console.log(listName);
 
@@ -24,6 +23,21 @@ exports.newList = function(userId, listName, callback) {
             callback(message);
         }
     });
+}
+
+exports.checkList = function(userId, listName, callback) {
+    console.log(userId);
+    console.log(listName);
+
+    var params = {
+        TableName: "seznam",
+        Item: {
+            "user": userId,
+            "list": listName
+        }
+    };
+
+    return get.get(params);
 }
 
 exports.updateList = function(userId, listName, item, callback) {
@@ -70,8 +84,7 @@ exports.getList = function(userId, listName, callback) {
 }
 
 exports.loadState = function(userId) {
-    console.log(userId);
-
+    // Loads latest state of user
     var params = {
         TableName: "seznam-state",
         Key: {
@@ -83,16 +96,16 @@ exports.loadState = function(userId) {
 }
 
 exports.saveState = function(userId, listName) {
-    console.log(userId);
-
+    // Saves latest change to the state.
     var params = {
         TableName: "seznam-state",
-        Key: {
-            "user": userId
+        Item: {
+            "user": userId,
+            "list": listName
         }
     };
 
-    return get.get(params);
+    return write.put(params);
 }
 
 /*

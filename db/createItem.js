@@ -1,7 +1,6 @@
 // This function shall be later isolated into standalone Lambda function.
 exports.put = function(params) {
     return new Promise(function(done, fail) {
-        var user = params.Item.userId;
         var AWS = require("aws-sdk");
 
         AWS.config.update({
@@ -14,10 +13,10 @@ exports.put = function(params) {
         console.log("Attempting to create new thing in DynamoDB...");
         docClient.put(params, function(err, data) {
             if (err) {
-                console.error("Unable to add new items from user ", user, ". Error JSON:", JSON.stringify(err, null, 2));
+                console.error("Item was NOT created! Error JSON:", JSON.stringify(err, null, 2));
                 fail(err)
             } else {
-                console.log("Request by user ", user, " was successfully added.");
+                console.log("Item was successfully created.");
                 done(data);
             }
         });
