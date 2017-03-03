@@ -2,7 +2,7 @@ var write = require('./../db/createItem.js');
 var update = require('./../db/updateItem.js');
 var get = require('./../db/getItem.js');
 
-exports.newList = function(userId, listName, callback) {
+exports.newList = function(userId, listName) {
     console.log(userId);
     console.log(listName);
 
@@ -14,15 +14,7 @@ exports.newList = function(userId, listName, callback) {
         }
     };
 
-    write.put(params, function(err, data) {
-        if (!err) {
-            var message = "Seznam " + listName + " byl uspesne vytvoren.";
-            callback(message);
-        } else {
-            var message = "Seznam " + listName + " NEBYL vytvoren! Pardon!";
-            callback(message);
-        }
-    });
+    return write.put(params);
 }
 
 exports.checkList = function(userId, listName) {
@@ -40,7 +32,7 @@ exports.checkList = function(userId, listName) {
     return get.get(params);
 }
 
-exports.updateList = function(userId, listName, item, callback) {
+exports.updateList = function(userId, listName, item) {
     var AWS = require('aws-sdk');
     //var dynamodb = new AWS.DynamoDB();
     var docClient = new AWS.DynamoDB.DocumentClient();
@@ -59,28 +51,8 @@ exports.updateList = function(userId, listName, item, callback) {
         },
         ReturnValues: "UPDATED_NEW"
     };
-    update.update(params);
-    var message = "OK, pridal jsem " + item + " na seznam " + listName + ".";
-    callback(message);
-}
+    return update.update(params);
 
-exports.getList = function(userId, listName, callback) {
-    console.log('GetList userId: ' + userId);
-    console.log('GetList listName: ' + listName);
-
-    var params = {
-        TableName: "seznam",
-        Key: {
-            "user": userId,
-            "list": listName
-        }
-    };
-
-    get.get(params, function(callback) {
-        console.log('RESULT of DB call: ', callback);
-    });
-    var message = "Seznam " + listName + " obsahuje polozky: ...";
-    callback(message);
 }
 
 exports.loadState = function(userId) {
