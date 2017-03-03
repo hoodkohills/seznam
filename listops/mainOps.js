@@ -25,9 +25,9 @@ exports.newList = function(userId, listName, callback) {
     });
 }
 
-exports.checkList = function(userId, listName, callback) {
-    console.log(userId);
-    console.log(listName);
+exports.checkList = function(userId, listName) {
+    console.log('Checklist userId: ' + userId);
+    console.log('Checklist listName: ' + listName);
 
     var params = {
         TableName: "seznam",
@@ -37,22 +37,16 @@ exports.checkList = function(userId, listName, callback) {
         }
     };
 
-    return get.get(params, function(err, data) {
-        if (!err) {
-            callback(data);
-        } else {
-            callback(err);
-        }
-    });
+    return get.get(params);
 }
 
 exports.updateList = function(userId, listName, item, callback) {
     var AWS = require('aws-sdk');
     //var dynamodb = new AWS.DynamoDB();
     var docClient = new AWS.DynamoDB.DocumentClient();
-    console.log(userId);
-    console.log(listName);
-    console.log(item);
+    console.log('UpdateList userId: ' + userId);
+    console.log('UpdateList listName: ' + listName);
+    console.log('UpdateList item: ' + item);
     var params = {
         TableName: "seznam",
         Key: {
@@ -71,8 +65,8 @@ exports.updateList = function(userId, listName, item, callback) {
 }
 
 exports.getList = function(userId, listName, callback) {
-    console.log(userId);
-    console.log(listName);
+    console.log('GetList userId: ' + userId);
+    console.log('GetList listName: ' + listName);
 
     var params = {
         TableName: "seznam",
@@ -102,16 +96,18 @@ exports.loadState = function(userId) {
 }
 
 exports.saveState = function(userId, listName) {
+    var AWS = require('aws-sdk');
+    //var dynamodb = new AWS.DynamoDB();
+    var docClient = new AWS.DynamoDB.DocumentClient();
     // Saves latest change to the state.
     var params = {
         TableName: "seznam-state",
         Key: {
-            "user": userId,
-            "list": listName
+            "user": userId
         },
         UpdateExpression: "SET listName :l",
         ExpressionAttributeValues: {
-            ":l": listName
+            ":l": docClient.createSet([listName])
         },
         ReturnValues: "UPDATED_NEW"
     };
