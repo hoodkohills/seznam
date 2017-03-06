@@ -12,66 +12,56 @@ module.exports = botBuilder(function(request) {
             console.log(data);
             // MAIN switch
             switch (data.first) {
-                case "help":
-                case "pomoc":
-                case "hello":
-                case "halo":
-                case "hi":
-                case "ahoj":
-                    done('Ahoj! Ja jsem Nezapominak, Tvuj pomocnik s listecky a tahaky k nakupum a podobnym akcim. Ovladej mne snadno: pomoci prikazu SEZNAM vypises aktualni seznam, pripadne pomoci SEZNAM JMENO SEZNAMU prepni aktivni seznam. Prikazem PRIDEJ NECO pridas neco na aktivni seznam. Prikazem VYHOD NECO odebiras polozky z aktivniho seznamu a prikazem SMAZ JMENO SEZNAMU smazes cely jeden seznam. Dalsi napovedu ziskas po napsani prikazu NAPOVEDA. Preji hezky den!');
-                    break;
-                case "napoveda":
-                    done ();
-                    break;
-                case "autori":
-                case "nezapominak":
+
                 case "seznam":
-                    // ListName is provided by STATE or by user.
-                    if (!data.second) {
-                        var listName = state.Item.listName;
-                    } else {
-                        var listName = data.second;
-                    }
-                    // Update state of user, if user sent second word data.second
                     if (data.second) {
-                        listOps.saveState(userId, listName);
+                        var listName = data.second;
+                    } else {
+                        var listName = state.Item.listName.values[0];
                     }
-                    // Check the content of the list / or create new one
                     listOps.checkList(userId, listName).then(function(list) {
-                        var message = 'Obsah seznamu ' + listName + ': ';
+                        var message = 'Obsah prave aktivniho seznamu ' + listName + ': ';
                         console.log(list);
                         var things = list.Item.things.values;
                         things.forEach(function(thing) {
                             message += thing;
                             message += ', '; // New line element to be pushed as well.
                         });
-                        console.log('This shall show all things from current list: ' + message);
+                        listOps.saveState(userId, listName); // New list is set as active = save state.
                         done(message);
                     }).catch(function(err) {
                         console.log('List does not exists, let us create a new one!');
                         listOps.newList(userId, listName).then(function(list) {
                             listOps.saveState(userId, listName); // New list means, we also update latest state.
-                            done(list);
+                            var message = 'Prave aktivni seznam ' + listName + ' je prazdny.'
+                            done(message);
                         });
                     });
                     break;
+
                 case "pridej":
-                    if (!data.first) {
-                        done('Musis napsat, co presne chces pridat na aktualni seznam.');
+                    if (!data.second) {
+                        var listName = state.Item.listName.values[0];
+                        var message = 'Musis napsat alespon jedno slovo, ktere si prejes pridat na seznam ' + listName + '.';
+                        done(message);
                     } else {
-                        var listName = state.Item.listName;
+                        var listName = state.Item.listName.values[0];
                         var item = data.second;
-                        listOps.updateList(userId, listName, item, function(callback) {
-                            console.log(callback);
-                            done(callback);
+                        listOps.updateList(userId, listName, item).then(function(response) {
+                            var message = 'OK, pridal jsem ' + item + ' na seznam ' + listName + '.';
+                            done(message);
+                        }).catch(function(err) {
+                            var message = 'Oups, neco se pokazilo a nepridal jsem polozku na seznam, omlouvam se.';
+                            done(message);
                         });
                     }
                     break;
+
                 case "ukaz":
-                    if (!data.second) {
-                        var listName = state.Item.listName;
-                    } else {
+                    if (data.second) {
                         var listName = data.second;
+                    } else {
+                        var listName = state.Item.listName.values[0];
                     }
                     listOps.checkList(userId, listName).then(function(list) {
                         var message = 'Obsah seznamu ' + listName + ': ';
@@ -83,42 +73,51 @@ module.exports = botBuilder(function(request) {
                         });
                         done(message);
                     }).catch(function(err) {
-                        var message = 'Seznam ' + listName + ' je prazdny nebo neexistuje.';
+                        var message = 'Seznam ' + listName + ' je prazdny :).';
                         done(message);
                     });
+
                     break;
-                case "seznamy":
-                    listOps.listLists(userId, function(callback) {
-                        console.log(callback);
-                        message = callback;
-                    });
-                    // WRITE latest state of user, whatever that means. listOps.stateUpdate(userId, listName);
+
+                case "zahod":
+                    if (!data.second) {
+                        var listName = state.Item.listName.values[0];
+                        var message = 'Musis napsat alespon jedno slovo, ktere si prejes smazat ze seznamu ' + listName + '.';
+                        done(message);
+                    } else {
+                        var listName = state.Item.listName.values[0];
+                        var item = data.second;
+                        listOps.removeItem(userId, listName, item).then(function(response) {
+                            var message = 'OK, smazal jsem ' + item + ' ze seznamu ' + listName + '.';
+                            done(message);
+                        }).catch(function(err) {
+                            var message = 'Oups, neco se pokazilo a nesmazal jsem polozku ze seznamu, je mi to moc lito.';
+                            done(message);
+                        });
+                    }
+                    break;
+
+                case "save":
+                    if (data.second) {
+                        var listName = data.second;
+                    } else {
+                        var listName = state.Item.listName.values[0];
+                    }
+                    listOps.saveState(userId, listName);
+                    var message = 'Saving state: ' + listName;
                     done(message);
                     break;
+
                 default:
-                    done('Jsem zatim velice mlady a musim se toho jeste hodne naucit, ale neboj, ucim se rychle! Snad Ti zatim bude stacit napsat prikaz POMOC nebo rovnou NAPOVEDA.');
+                    var message = 'Not recognised.';
+                    done(message);
             }
+
         }).catch(function(err) {
             // State not found in DB = create new user...
+            console.log(err);
+            var message = 'Pokud toto ctete, tak se muselo neco osklive pokazit s nahravanim posledniho stavu. Vase data jsou nedotcena, ale jako cert vi! :)';
+            done(message);
         });
     });
 });
-
-/*
-                case "ahoj":
-                    if (!data.second) { done ('Ahoj! Zkus napsat za ahoj jeste neco a ja to zopakuji.');
-                    } else {
-                    done('Ahoj znova, napsal si ' + data.second + ', ze mam pravdu?');
-                    }
-                case "ano":
-                case "jo":
-                    done ('Ja vim, ze ano...');
-                case "ne":
-                case "kdepak":
-                    done ('Jeden z nas se jiste myli...');
-
-
-
-
-
-*/
