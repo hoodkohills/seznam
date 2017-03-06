@@ -20,7 +20,7 @@ module.exports = botBuilder(function(request) {
                         var listName = state.Item.listName.values[0];
                     }
                     listOps.checkList(userId, listName).then(function(list) {
-                        var message = 'Obsah seznamu ' + listName + ': ';
+                        var message = 'Obsah prave aktivniho seznamu ' + listName + ': ';
                         console.log(list);
                         var things = list.Item.things.values;
                         things.forEach(function(thing) {
@@ -40,10 +40,62 @@ module.exports = botBuilder(function(request) {
                     break;
 
                 case "pridej":
+                    if (!data.second) {
+                        var listName = state.Item.listName.values[0];
+                        var message = 'Musis napsat alespon jedno slovo, ktere si prejes pridat na seznam ' + listName + '.';
+                        done(message);
+                    } else {
+                        var listName = state.Item.listName.values[0];
+                        var item = data.second;
+                        listOps.updateList(userId, listName, item).then(function(response) {
+                            var message = 'OK, pridal jsem ' + item + ' na seznam ' + listName + '.';
+                            done(message);
+                        }).catch(function(err) {
+                            var message = 'Oups, neco se pokazilo a nepridal jsem polozku na seznam, omlouvam se.';
+                            done(message);
+                        });
+                    }
+                    break;
 
+                case "ukaz":
+                    if (data.second) {
+                        var listName = data.second;
+                    } else {
+                        var listName = state.Item.listName.values[0];
+                    }
+                    listOps.checkList(userId, listName).then(function(list) {
+                        var message = 'Obsah seznamu ' + listName + ': ';
+                        console.log(list);
+                        var things = list.Item.things.values;
+                        things.forEach(function(thing) {
+                            message += thing;
+                            message += ', '; // New line element to be pushed as well.
+                        });
+                        done(message);
+                    }).catch(function(err) {
+                        var message = 'Seznam ' + listName + ' je prazdny :).';
+                        done(message);
+                    });
 
+                    break;
 
-                   break;
+                case "zahod":
+                    if (!data.second) {
+                        var listName = state.Item.listName.values[0];
+                        var message = 'Musis napsat alespon jedno slovo, ktere si prejes smazat ze seznamu ' + listName + '.';
+                        done(message);
+                    } else {
+                        var listName = state.Item.listName.values[0];
+                        var item = data.second;
+                        listOps.removeItem(userId, listName, item).then(function(response) {
+                            var message = 'OK, smazal jsem ' + item + ' ze seznamu ' + listName + '.';
+                            done(message);
+                        }).catch(function(err) {
+                            var message = 'Oups, neco se pokazilo a nesmazal jsem polozku ze seznamu, je mi to moc lito.';
+                            done(message);
+                        });
+                    }
+                    break;
 
                 case "save":
                     if (data.second) {
@@ -64,7 +116,8 @@ module.exports = botBuilder(function(request) {
         }).catch(function(err) {
             // State not found in DB = create new user...
             console.log(err);
-            done('Some error!');
+            var message = 'Pokud toto ctete, tak se muselo neco osklive pokazit s nahravanim posledniho stavu. Vase data jsou nedotcena, ale jako cert vi! :)';
+            done(message);
         });
     });
 });
