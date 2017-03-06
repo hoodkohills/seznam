@@ -8,117 +8,27 @@ module.exports = botBuilder(function(request) {
 
     return new Promise(function(done) {
         listOps.loadState(userId).then(function(state) { // READ latest state of user. If state is not present, run init script to create necessary table entries.
-            console.log(state);
+            console.log(state.Items.listName.values);
             console.log(data);
             // MAIN switch
             switch (data.first) {
-                case "help":
-                case "pomoc":
-                case "hello":
-                case "halo":
-                case "hi":
-                case "ahoj":
-                    done('Ahoj! Ja jsem Nezapominak, Tvuj pomocnik s listecky a tahaky k nakupum a podobnym akcim. Ovladej mne snadno: pomoci prikazu SEZNAM vypises aktualni seznam, pripadne pomoci SEZNAM JMENO SEZNAMU prepni aktivni seznam. Prikazem PRIDEJ NECO pridas neco na aktivni seznam. Prikazem VYHOD NECO odebiras polozky z aktivniho seznamu a prikazem SMAZ JMENO SEZNAMU smazes cely jeden seznam. Dalsi napovedu ziskas po napsani prikazu NAPOVEDA. Preji hezky den!');
-                    break;
-                case "napoveda":
-                    done ();
-                    break;
-                case "autori":
-                case "nezapominak":
-                case "seznam":
-                    // ListName is provided by STATE or by user.
-                    if (!data.second) {
-                        var listName = state.Item.listName;
-                    } else {
-                        var listName = data.second;
-                    }
-                    // Update state of user, if user sent second word data.second
-                    if (data.second) {
-                        listOps.saveState(userId, listName);
-                    }
-                    // Check the content of the list / or create new one
-                    listOps.checkList(userId, listName).then(function(list) {
-                        var message = 'Obsah seznamu ' + listName + ': ';
-                        console.log(list);
-                        var things = list.Item.things.values;
-                        things.forEach(function(thing) {
-                            message += thing;
-                            message += ', '; // New line element to be pushed as well.
-                        });
-                        console.log('This shall show all things from current list: ' + message);
-                        done(message);
-                    }).catch(function(err) {
-                        console.log('List does not exists, let us create a new one!');
-                        listOps.newList(userId, listName).then(function(list) {
-                            listOps.saveState(userId, listName); // New list means, we also update latest state.
-                            done(list);
-                        });
-                    });
-                    break;
-                case "pridej":
-                    if (!data.first) {
-                        done('Musis napsat, co presne chces pridat na aktualni seznam.');
-                    } else {
-                        var listName = state.Item.listName;
-                        var item = data.second;
-                        listOps.updateList(userId, listName, item, function(callback) {
-                            console.log(callback);
-                            done(callback);
-                        });
-                    }
-                    break;
-                case "ukaz":
-                    if (!data.second) {
-                        var listName = state.Item.listName;
-                    } else {
-                        var listName = data.second;
-                    }
-                    listOps.checkList(userId, listName).then(function(list) {
-                        var message = 'Obsah seznamu ' + listName + ': ';
-                        console.log(list);
-                        var things = list.Item.things.values;
-                        things.forEach(function(thing) {
-                            message += thing;
-                            message += ', '; // New line element to be pushed as well.
-                        });
-                        done(message);
-                    }).catch(function(err) {
-                        var message = 'Seznam ' + listName + ' je prazdny nebo neexistuje.';
-                        done(message);
-                    });
-                    break;
-                case "seznamy":
-                    listOps.listLists(userId, function(callback) {
-                        console.log(callback);
-                        message = callback;
-                    });
-                    // WRITE latest state of user, whatever that means. listOps.stateUpdate(userId, listName);
+
+                case "save":
+                    var message = 'Savestate';
+                    //var listName = state.Items.listName.values;
+                    //console.log(listName)
+                    console.log(message);
                     done(message);
                     break;
+
                 default:
-                    done('Jsem zatim velice mlady a musim se toho jeste hodne naucit, ale neboj, ucim se rychle! Snad Ti zatim bude stacit napsat prikaz POMOC nebo rovnou NAPOVEDA.');
+                    var message = 'Not recognised.';
+                    done(message);
             }
+
         }).catch(function(err) {
             // State not found in DB = create new user...
+            done(err);
         });
     });
 });
-
-/*
-                case "ahoj":
-                    if (!data.second) { done ('Ahoj! Zkus napsat za ahoj jeste neco a ja to zopakuji.');
-                    } else {
-                    done('Ahoj znova, napsal si ' + data.second + ', ze mam pravdu?');
-                    }
-                case "ano":
-                case "jo":
-                    done ('Ja vim, ze ano...');
-                case "ne":
-                case "kdepak":
-                    done ('Jeden z nas se jiste myli...');
-
-
-
-
-
-*/

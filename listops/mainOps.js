@@ -77,7 +77,7 @@ exports.saveState = function(userId, listName) {
         Key: {
             "user": userId
         },
-        UpdateExpression: "SET listName :l",
+        UpdateExpression: "SET listName = :l",
         ExpressionAttributeValues: {
             ":l": docClient.createSet([listName])
         },
