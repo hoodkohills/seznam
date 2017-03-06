@@ -14,8 +14,17 @@ module.exports = botBuilder(function(request) {
             switch (data.first) {
                 case "help":
                 case "pomoc":
-                    done('Zkus napsat prikaz `ahoj`!');
+                case "hello":
+                case "halo":
+                case "hi":
+                case "ahoj":
+                    done('Ahoj! Ja jsem Nezapominak, Tvuj pomocnik s listecky a tahaky k nakupum a podobnym akcim. Ovladej mne snadno: pomoci prikazu SEZNAM vypises aktualni seznam, pripadne pomoci SEZNAM JMENO SEZNAMU prepni aktivni seznam. Prikazem PRIDEJ NECO pridas neco na aktivni seznam. Prikazem VYHOD NECO odebiras polozky z aktivniho seznamu a prikazem SMAZ JMENO SEZNAMU smazes cely jeden seznam. Dalsi napovedu ziskas po napsani prikazu NAPOVEDA. Preji hezky den!');
                     break;
+                case "napoveda":
+                    done ();
+                    break;
+                case "autori":
+                case "nezapominak":
                 case "seznam":
                     // ListName is provided by STATE or by user.
                     if (!data.second) {
@@ -23,7 +32,6 @@ module.exports = botBuilder(function(request) {
                     } else {
                         var listName = data.second;
                     }
-
                     // Update state of user, if user sent second word data.second
                     if (data.second) {
                         listOps.saveState(userId, listName);
@@ -60,12 +68,24 @@ module.exports = botBuilder(function(request) {
                     }
                     break;
                 case "ukaz":
-                    listName = state.Item.listName;
-                    listOps.getList(userId, listName, function(callback) {
-                        console.log(callback);
-                        message = callback;
+                    if (!data.second) {
+                        var listName = state.Item.listName;
+                    } else {
+                        var listName = data.second;
+                    }
+                    listOps.checkList(userId, listName).then(function(list) {
+                        var message = 'Obsah seznamu ' + listName + ': ';
+                        console.log(list);
+                        var things = list.Item.things.values;
+                        things.forEach(function(thing) {
+                            message += thing;
+                            message += ', '; // New line element to be pushed as well.
+                        });
+                        done(message);
+                    }).catch(function(err) {
+                        var message = 'Seznam ' + listName + ' je prazdny nebo neexistuje.';
+                        done(message);
                     });
-                    done(message);
                     break;
                 case "seznamy":
                     listOps.listLists(userId, function(callback) {
@@ -76,7 +96,7 @@ module.exports = botBuilder(function(request) {
                     done(message);
                     break;
                 default:
-                    done('Bohuzel, tento prikaz neznam, zkus napsat HELP.');
+                    done('Jsem zatim velice mlady a musim se toho jeste hodne naucit, ale neboj, ucim se rychle! Snad Ti zatim bude stacit napsat prikaz POMOC nebo rovnou NAPOVEDA.');
             }
         }).catch(function(err) {
             // State not found in DB = create new user...
