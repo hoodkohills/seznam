@@ -55,6 +55,7 @@ exports.updateList = function(userId, listName, item) {
 
 }
 
+// loadstate confirmed working OK
 exports.loadState = function(userId) {
     // Loads latest state of user
     var params = {
@@ -67,6 +68,7 @@ exports.loadState = function(userId) {
     return get.get(params);
 }
 
+// savestate confirmed working OK
 exports.saveState = function(userId, listName) {
     var AWS = require('aws-sdk');
     //var dynamodb = new AWS.DynamoDB();
