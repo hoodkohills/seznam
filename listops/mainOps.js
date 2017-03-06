@@ -13,8 +13,41 @@ exports.newList = function(userId, listName) {
             "list": listName
         }
     };
-
     return write.put(params);
+}
+
+exports.newUser = function(userId) {
+
+    var paramsState = {
+        TableName: "seznam-state",
+        Item: {
+            "user": userId,
+            "listName": "nakup"
+        }
+    };
+
+    var paramsList = {
+        TableName: "seznam",
+        Item: {
+            "user": userId,
+            "list": "nakup"
+        }
+    };
+
+    write.put(paramsList);
+    return write.put(paramsState);
+}
+
+exports.saveHistory = function(userId, text) {
+     // So far no timestamp
+     var params = {
+         TableName: "seznam-history",
+         Item: {
+             "user": userId,
+             "text": text
+         }
+     };
+     return write.put(params);
 }
 
 exports.checkList = function(userId, listName) {
@@ -28,7 +61,6 @@ exports.checkList = function(userId, listName) {
             "list": listName
         }
     };
-
     return get.get(params);
 }
 
@@ -52,7 +84,6 @@ exports.updateList = function(userId, listName, item) {
         ReturnValues: "UPDATED_NEW"
     };
     return update.update(params);
-
 }
 
 exports.loadState = function(userId) {
@@ -63,7 +94,6 @@ exports.loadState = function(userId) {
             "user": userId
         }
     };
-
     return get.get(params);
 }
 
@@ -83,7 +113,6 @@ exports.saveState = function(userId, listName) {
         },
         ReturnValues: "UPDATED_NEW"
     };
-
     return update.update(params);
 }
 
