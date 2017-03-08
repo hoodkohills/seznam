@@ -9,6 +9,9 @@ module.exports = botBuilder(function(request) {
     return new Promise(function(done) {
         listOps.loadState(userId).then(function(state) { // READ latest state of user. If state is not present, run init script to create necessary table entries.
             console.log(state);
+            if (JSON.stringify(state) === '{}') {
+            console.log('AHA! NEW USER DETECTED!')
+            }
             console.log(data);
             // MAIN switch
             switch (data.first) {
