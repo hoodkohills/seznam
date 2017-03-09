@@ -1,6 +1,7 @@
 var write = require('./../db/createItem.js');
 var update = require('./../db/updateItem.js');
 var get = require('./../db/getItem.js');
+var query = require('./../db/queryItem.js');
 
 // newlist confirmed working OK
 exports.newList = function(userId, listName) {
@@ -115,4 +116,19 @@ exports.removeItem = function(userId, listName, item) {
     };
     return update.update(params);
 
+}
+
+// list all lists
+exports.listLists = function(userId) {
+        var params = {
+            TableName: "seznam",
+            KeyConditionExpression: "#usr = :userid",
+            ExpressionAttributeNames: {
+                "#usr": "user"
+            },
+            ExpressionAttributeValues: {
+                ":userid": userId
+            }
+        };
+    return query.query(params);
 }

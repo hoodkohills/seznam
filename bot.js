@@ -84,7 +84,7 @@ module.exports = botBuilder(function(request) {
 
                 case "zahod":
                     if (!data.second) {
-                        var listName = state.Item.listName.values[0];
+                        //var listName = state.Item.listName.values[0];
                         var message = 'Musis napsat alespon jedno slovo, ktere si prejes smazat ze seznamu ' + listName + '.';
                         done(message);
                     } else {
@@ -111,8 +111,24 @@ module.exports = botBuilder(function(request) {
                     done(message);
                     break;
 
+                case "seznamy":
+                    listOps.listLists(userId).then(function(response){
+                    var lists = '';
+                    response.Items.forEach(function(item){
+                        lists += item.list + ', ';
+                    });
+                    console.log(lists);
+                    var message = 'Tvoje seznamy: ' + lists;
+                    done(message);
+                    }).catch(function(err) {
+                        var message = 'Jejda, neco se pokazilo, nepodarilo se mi nacist Tvoje seznamy, omlouvam se.';
+                        console.log(err);
+                        done(message);
+                    });
+                    break;
+
                 default:
-                    var message = 'Not recognised.';
+                    var message = 'Je mi to samotnemu velmi lito, ale tento prikaz jeste neznam ci jsem ho nedokazal rozpoznat. Ucim se kazdy den. Pro napovedu staci napsat POMOC.';
                     done(message);
             }
 
