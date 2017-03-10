@@ -118,7 +118,7 @@ exports.removeItem = function(userId, listName, item) {
 
 }
 
-// list all lists
+// list all lists confirmed workin OK
 exports.listLists = function(userId) {
         var params = {
             TableName: "seznam",
@@ -131,4 +131,41 @@ exports.listLists = function(userId) {
             }
         };
     return query.query(params);
+}
+
+// add a new user
+exports.newUser = function(userId) {
+
+    var paramsState = {
+        TableName: "seznam-state",
+        Item: {
+            "user": userId,
+            "listName": "nakup"
+        }
+    };
+
+    var paramsList = {
+        TableName: "seznam",
+        Item: {
+            "user": userId,
+            "list": "nakup"
+        }
+    };
+
+    write.put(paramsList);
+    write.put(paramsState);
+    return
+}
+
+// save history, not implemented yet...
+exports.saveHistory = function(userId, text) {
+     // So far no timestamp
+     var params = {
+         TableName: "seznam-history",
+         Item: {
+             "user": userId,
+             "text": text
+         }
+     };
+     return write.put(params);
 }

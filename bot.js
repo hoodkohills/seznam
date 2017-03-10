@@ -12,7 +12,7 @@ module.exports = botBuilder(function(request) {
             if (JSON.stringify(state) === '{}') {
             var message = 'Ahoj! My se jeste koukam nezname, ale to vubec nevadi! Zalozil jsem Ti novy seznam NAKUP (tak to delam pokazde, kdyz se s nekym seznamim). Muzes ho zacit plnit prikazem PRIDEJ. Pro napovedu staci napsat POMOC.';
             console.log('AHA! NEW USER DETECTED!')
-            // listOps.newUser(userId);
+            listOps.newUser(userId);
             done(message);
             }
             console.log(data);
