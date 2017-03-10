@@ -10,7 +10,10 @@ module.exports = botBuilder(function(request) {
         listOps.loadState(userId).then(function(state) { // READ latest state of user. If state is not present, run init script to create necessary table entries.
             console.log(state);
             if (JSON.stringify(state) === '{}') {
+            var message = 'Ahoj! My se jeste koukam nezname, ale to vubec nevadi! Zalozil jsem Ti novy seznam NAKUP (tak to delam pokazde, kdyz se s nekym seznamim). Muzes ho zacit plnit prikazem PRIDEJ. Pro napovedu staci napsat POMOC.';
             console.log('AHA! NEW USER DETECTED!')
+            // listOps.newUser(userId);
+            done(message);
             }
             console.log(data);
             // MAIN switch
