@@ -136,11 +136,15 @@ exports.listLists = function(userId) {
 // add a new user
 exports.newUser = function(userId) {
 
+    var AWS = require('aws-sdk');
+    //var dynamodb = new AWS.DynamoDB();
+    var docClient = new AWS.DynamoDB.DocumentClient();
+
     var paramsState = {
         TableName: "seznam-state",
         Item: {
             "user": userId,
-            "listName": "nakup"
+            "listName": docClient.createSet(["nakup"])
         }
     };
 
