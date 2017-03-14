@@ -10,10 +10,10 @@ module.exports = botBuilder(function(request) {
         listOps.loadState(userId).then(function(state) { // READ latest state of user. If state is not present, run init script to create necessary table entries.
             console.log(state);
             if (JSON.stringify(state) === '{}') {
-            var message = 'Ahoj! My se jeste koukam nezname, ale to vubec nevadi! Zalozil jsem Ti novy seznam NAKUP (tak to delam pokazde, kdyz se s nekym seznamim). Muzes ho zacit plnit prikazem PRIDEJ. Pro napovedu staci napsat POMOC.';
-            console.log('AHA! NEW USER DETECTED!');
-            listOps.newUser(userId);
-            done(message);
+                var message = 'Ahoj! My se jeste koukam nezname, ale to vubec nevadi! Zalozil jsem Ti novy seznam NAKUP (tak to delam pokazde, kdyz se s nekym seznamim). Muzes ho zacit plnit prikazem PRIDEJ. Pro napovedu staci napsat POMOC.';
+                console.log('AHA! NEW USER DETECTED!');
+                listOps.newUser(userId);
+                done(message);
             }
             console.log(data);
             // MAIN switch
@@ -103,15 +103,26 @@ module.exports = botBuilder(function(request) {
                     }
                     break;
 
-                case "save":
-                    if (data.second) {
-                        var listName = data.second;
+                case "smaz":
+                    if (!data.second) {
+                        //var listName = state.Item.listName.values[0];
+                        var message = 'Chces-li smazat cely seznam, musis nejprve napsat jeho nazev. Nelze smazat prave aktivni seznam, cili se musis nejprve prepnout na jakykoliv jiny.';
+                        done(message);
                     } else {
                         var listName = state.Item.listName.values[0];
+                        if (listName === data.second){
+                            var message = 'Nezlob se, ale nechci ti mazat prave aktivni seznam, pro jistotu. Prepni se na jakykoliv jiny a zkus to prosim znova, diky za pochopeni.'
+                            done(message);
+                        }
+                        var listToDelete = data.second;
+                        listOps.removeList(userId, listToDelete).then(function(response) {
+                            var message = 'OK, smazal jsem celicky seznam ' + listToDelete + ', ale muzes si klidne zalozit novy se stejnym nazvem.';
+                            done(message);
+                        }).catch(function(err) {
+                            var message = 'Jejda, neco se pokazilo a nesmazal pozadovany seznam.';
+                            done(message);
+                        });
                     }
-                    listOps.saveState(userId, listName);
-                    var message = 'Saving state: ' + listName;
-                    done(message);
                     break;
 
                 case "seznamy":

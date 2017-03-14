@@ -2,6 +2,7 @@ var write = require('./../db/createItem.js');
 var update = require('./../db/updateItem.js');
 var get = require('./../db/getItem.js');
 var query = require('./../db/queryItem.js');
+var del = require('./../db/deleteItem.js')
 
 // newlist confirmed working OK
 exports.newList = function(userId, listName) {
@@ -118,7 +119,23 @@ exports.removeItem = function(userId, listName, item) {
 
 }
 
-// list all lists confirmed workin OK
+// removelist
+exports.removeList = function(userId, listName) {
+
+    console.log('DeleteList userId: ' + userId);
+    console.log('DeleteList listName: ' + listName);
+    var params = {
+        TableName: "seznam",
+        Key: {
+            "user": userId,
+            "list": listName
+        }
+    };
+    return del.delete(params);
+
+}
+
+// list all lists confirmed working OK
 exports.listLists = function(userId) {
         var params = {
             TableName: "seznam",
@@ -133,7 +150,7 @@ exports.listLists = function(userId) {
     return query.query(params);
 }
 
-// add a new user
+// add a new user confirmed working OK
 exports.newUser = function(userId) {
 
     var AWS = require('aws-sdk');
