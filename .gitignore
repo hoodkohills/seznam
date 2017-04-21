@@ -67,3 +67,6 @@ typings/
 npm-debug.log
 package.json
 /.idea/vcs.xml
+/claudia.json
+/claudia_old.json
+/assumedRole.pkl

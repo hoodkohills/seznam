@@ -145,7 +145,14 @@ module.exports = botBuilder(function(request) {
                     var message = 'Zakladni prikazy jsou: SEZNAM (zaklada novy seznam a prepina mezi seznamy), UKAZ (vypise libovolny seznam, ale nemeni aktivni seznam), SEZNAMY (vypise seznam seznamu :)), PRIDEJ (na aktivni seznam), ZAHOD (odebere z aktivniho seznamu) a SMAZ (smaze cely seznam bez varovani).';
                     done(message);
                     break;
-
+                /*
+                case "alarm":
+                    remind.alarm(userId).then(function(response)){
+                        var message = 'Alarm uspesne nastaven!';
+                }
+                    done(message);
+                    break;
+                */
                 default:
                     var message = 'Je mi to samotnemu velmi lito, ale tento prikaz jeste neznam ci jsem ho nedokazal rozpoznat. Ucim se kazdy den. Pro napovedu staci napsat POMOC.';
                     done(message);
