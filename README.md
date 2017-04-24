@@ -21,11 +21,18 @@ You have to design your own policy (as long as you don't want to stick default `
                 "dynamodb:Put",
                 "dynamodb:Delete",
                 "dynamodb:Query",
-                "dynamodb:Update",
-                "dynamodb:Delete",
+                "dynamodb:Update"
             ],
             "Effect": "Allow",
-            "Resource": "arn-of-both-of-your-tables"
+            "Resource": "arn-of-seznam-table"
+        },
+        {
+            "Action": [
+                "dynamodb:Get",
+                "dynamodb:Update"
+            ],
+            "Effect": "Allow",
+            "Resource": "arn-of-seznam-state-table"
         }
     ]
 }
